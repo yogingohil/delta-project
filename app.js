@@ -21,41 +21,37 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 const dbUrl = process.env.ATLASDB_URL;
-console.log(dbUrl);
 
 mongoose.connection.on("error", err => {
-  console.log("MongoDB error:", err);
+    console.log("MongoDB error:", err);
 });
 
 main()
-    .then(()=>{
-        console.log("connected to DB");
-    })
-    .catch((err)=>{
-        console.log(err);
-    });
+.then(()=>{
+    console.log("connected to DB");
+})
+.catch((err)=>{
+    console.log(err);
+});
 
 async function main() {
-  await mongoose.connect(dbUrl);
-}    
-console.log("Secret is:", process.env.CLOUD_API_SECRET); // Should print your secret key, NOT undefined
-console.log("Key is:", process.env.CLOUD_API_KEY);
+    await mongoose.connect(dbUrl);
+}
 
 app.set("view engine", "ejs");
-app.set("/views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended : true}));
 
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-
 const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: process.env.SECRET ,
-  },
-  touchAfter: 24 * 3600,
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
 });
 
 store.on("error", (err)=>{
@@ -63,15 +59,15 @@ store.on("error", (err)=>{
 });
 
 const sessionOptions = {
-  store,
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  },
+    store,
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
 };
 
 app.use(session(sessionOptions));
@@ -88,33 +84,23 @@ app.use((req,res,next) =>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.mapToken = process.env.MAP_TOKEN;
     next();
 });
-
-// app.get("/demouser", async(req,res)=>{
-//     let fakeUser = new User({
-//         email : "student@gmail.com",
-//         username : "alpha"
-//     });
-
-//     let registeredUser = await User.register(fakeUser, "helloword");
-//     res.send(registeredUser);
-// })
 
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-app.use ((req,res,next) =>{
-    next (new ExpressError (404, "Page Not Found"));
+app.use((req,res,next) =>{
+    next(new ExpressError(404, "Page Not Found"));
 });
 
-app.use ((err, req,res,next) =>{
-    let{statusCode=500,message="Something went wrong"} = err;
+app.use((err, req,res,next) =>{
+    let {statusCode = 500, message = "Something went wrong"} = err;
     res.status(statusCode).render("error.ejs", {message});
-    // res.status(statusCode).send(message);
-}); 
+});
 
 app.listen(8080, ()=>{
     console.log("server is listing on port 8080");
