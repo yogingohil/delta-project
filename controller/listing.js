@@ -5,7 +5,7 @@ module.exports.index = async (req,res) =>{
     const { q, category } = req.query;
     let queryFilter = {};
 
-    if (category) {
+    if (category && category !== "Trending") {
         const catRegex = new RegExp(category, "i");
         queryFilter.$or = [
             { category: catRegex },
@@ -25,7 +25,24 @@ module.exports.index = async (req,res) =>{
         ];
     }
 
-    const allListings = await Listing.find(queryFilter);
+    let allListings = await Listing.find(queryFilter).populate("reviews");
+
+    if (category === "Trending") {
+        allListings.sort((a, b) => {
+            const avgA = a.reviews && a.reviews.length > 0
+                ? a.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / a.reviews.length
+                : (a.category === "Trending" ? 5 : 0);
+            const avgB = b.reviews && b.reviews.length > 0
+                ? b.reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / b.reviews.length
+                : (b.category === "Trending" ? 5 : 0);
+
+            if (avgB !== avgA) {
+                return avgB - avgA;
+            }
+            return (b.reviews ? b.reviews.length : 0) - (a.reviews ? a.reviews.length : 0);
+        });
+    }
+
     res.render("listings/index.ejs", { allListings, q, selectedCategory: category });
   } catch (err) {
     console.error(err);
