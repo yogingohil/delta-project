@@ -41,6 +41,7 @@ async function main() {
 console.log("Secret is:", process.env.CLOUD_API_SECRET); // Should print your secret key, NOT undefined
 console.log("Key is:", process.env.CLOUD_API_KEY);
 
+app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended : true}));
@@ -49,11 +50,12 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+const secret = process.env.SECRET || "mysupersecretcode";
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
-    secret: process.env.SECRET ,
+    secret: secret,
   },
   touchAfter: 24 * 3600,
 });
@@ -64,12 +66,12 @@ store.on("error", (err)=>{
 
 const sessionOptions = {
   store,
-  secret: process.env.SECRET,
+  secret: secret,
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 };
