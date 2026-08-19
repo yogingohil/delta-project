@@ -160,15 +160,13 @@ WanderLust strictly follows the **Model-View-Controller (MVC)** architectural pa
 
 ## 📸 Screenshots & UI Preview
 
-<!-- Place project screenshots inside a /screenshots folder or update the paths below -->
-
-| **Explore / All Listings Page** | **Listing Detail Page with Map** |
+| **Explore / All Listings Page** | **MapTiler Interactive Map** |
 | :---: | :---: |
-| ![Explore Listings](https://raw.githubusercontent.com/yogingohil/delta-project/main/public/images/preview-home.png) <br> *(Filterable listings grid with tax toggle)* | ![Listing Details](https://raw.githubusercontent.com/yogingohil/delta-project/main/public/images/preview-show.png) <br> *(Listing overview with interactive MapTiler map)* |
+| ![Explore Listings](./screenshots/explore-listings.png) <br> *(Filterable listings grid with tax toggle)* | ![MapTiler Map](./screenshots/maptiler-map.png) <br> *(Interactive MapTiler map with location pin)* |
 
-| **Create / Edit Listing Form** | **Reviews & Rating Section** |
+| **Create New Listing Form** | **Leave a Review & Reviews Section** |
 | :---: | :---: |
-| ![Create Listing](https://raw.githubusercontent.com/yogingohil/delta-project/main/public/images/preview-new.png) <br> *(Category dropdown & Cloudinary image upload)* | ![Reviews](https://raw.githubusercontent.com/yogingohil/delta-project/main/public/images/preview-reviews.png) <br> *(Starability 5-star ratings with author controls)* |
+| ![Create Listing](./screenshots/create-listing.png) <br> *(Category dropdown & Cloudinary image upload)* | ![Reviews](./screenshots/reviews-section.png) <br> *(Starability 5-star ratings with review controls)* |
 
 ---
 
@@ -182,6 +180,13 @@ MAJORPROJECT/
 ├── schema.js                      # Joi validation schemas for Listings & Reviews
 ├── package.json                   # Dependencies, engines, and project scripts
 ├── .gitignore                     # Git ignored paths (node_modules, .env)
+├── README.md                      # Project documentation and architecture guide
+│
+├── screenshots/                   # Application preview screenshots for documentation
+│   ├── explore-listings.png       # Explore / All listings feed preview
+│   ├── maptiler-map.png           # MapTiler interactive map preview
+│   ├── create-listing.png         # Create listing form preview
+│   └── reviews-section.png        # Leave review & all reviews preview
 │
 ├── controller/                    # Business Logic Layer (MVC Controllers)
 │   ├── listing.js                 # Listings CRUD, search algorithm, and geocoding logic
