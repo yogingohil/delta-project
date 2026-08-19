@@ -9,6 +9,8 @@
 [![EJS](https://img.shields.io/badge/EJS-Templates-B4CA65?style=for-the-badge&logo=ejs&logoColor=black)](https://ejs.co/)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_CDN-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 [![MapTiler](https://img.shields.io/badge/MapTiler-Maps_&_Geocoding-0080FF?style=for-the-badge&logo=maplibre&logoColor=white)](https://www.maptiler.com/)
+[![GitHub repo size](https://img.shields.io/github/repo-size/yogingohil/delta-project?style=for-the-badge&color=orange)](https://github.com/yogingohil/delta-project)
+[![GitHub stars](https://img.shields.io/github/stars/yogingohil/delta-project?style=for-the-badge&color=yellow)](https://github.com/yogingohil/delta-project/stargazers)
 [![License](https://img.shields.io/badge/License-ISC-blue?style=for-the-badge)](LICENSE)
 
 ---
@@ -20,6 +22,8 @@
 - [Tech Stack](#-tech-stack)
 - [Architecture & Workflow](#-architecture--workflow)
 - [Screenshots & UI Preview](#-screenshots--ui-preview)
+- [Quick Demo & Testing Guide](#-quick-demo--testing-guide)
+- [Security & Data Integrity](#-security--data-integrity)
 - [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
@@ -167,6 +171,43 @@ WanderLust strictly follows the **Model-View-Controller (MVC)** architectural pa
 | **Create New Listing Form** | **Leave a Review & Reviews Section** |
 | :---: | :---: |
 | ![Create Listing](./screenshots/create-listing.png) <br> *(Category dropdown & Cloudinary image upload)* | ![Reviews](./screenshots/reviews-section.png) <br> *(Starability 5-star ratings with review controls)* |
+
+---
+
+## 🎮 Quick Demo & Testing Guide
+
+Want to quickly test the application's functionality on the [Live Demo](https://delta-project-s1n1.onrender.com/listings)? Follow this quick 60-second walkthrough:
+
+1. **Search & Filter Stays:**
+   - Click on the category icons (e.g., **Farms**, **Mountain**, **Trending**). Notice how **Trending** prioritizes stays with the highest star ratings and most reviews.
+   - Use the search bar to search for destinations (e.g., `"Ahmedabad"`, `"Lodge"`, or `"India"`).
+   - Toggle the **"Display total after taxes"** switch on the homepage to see dynamic +18% GST calculations.
+
+2. **Explore Detail Page & Map:**
+   - Click on any listing card to open its detail page.
+   - Scroll down to the **"Where you'll be"** section to interact with the dynamic MapTiler map and location pin.
+
+3. **Authentication & Reviewing:**
+   - Click **SignUp** in the navigation bar to create a test account. Notice how the navbar immediately updates to show **"Airbnb your home"** and **"Log out"**.
+   - Open any listing to access the **"Leave a review"** form, pick a star rating (1–5), write feedback, and click **Submit**.
+   - Notice that you can only delete reviews authored by your account.
+
+4. **Host a Stay (Listing CRUD):**
+   - Click **"Airbnb your home"**, fill out the form, upload a photo, select a category, and click **Add**.
+   - Your listing is instantly geocoded on MapTiler, image hosted on Cloudinary, and displayed in the main feed.
+   - As the owner, only you will see the **Edit** and **Delete** buttons for your property.
+
+---
+
+## 🔒 Security & Data Integrity
+
+WanderLust adopts standard web security best practices across authentication, storage, and authorization:
+
+- **🔐 Cryptographic Password Protection:** Passwords are never stored in plaintext. They are salted with unique cryptographic salts and hashed via PBKDF2 through `passport-local-mongoose`.
+- **🛡️ Multi-Tiered Authorization Guards:** Every mutating route (`POST`, `PUT`, `DELETE`) is protected by server-side middleware (`isLoggedIn`, `isOwner`, `isReviewAuthor`) to guard against Insecure Direct Object References (IDOR).
+- **📋 Schema Sanitization with Joi:** All incoming form payloads are strictly validated before hitting controller logic, preventing NoSQL injection, unauthorized field pollution, and malformed inputs.
+- **🍪 Secure Cookie & Session Architecture:** Configured with `httpOnly: true` (mitigating XSS session theft), `trust proxy` headers for HTTPS load balancers, and persistent MongoDB session encryption via `connect-mongo`.
+- **🔗 Referential Integrity:** Mongoose middleware cascades the deletion of nested review records when a parent listing document is deleted.
 
 ---
 
